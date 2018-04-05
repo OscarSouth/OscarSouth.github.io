@@ -11775,7 +11775,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Timeseries-Data-Extract-&amp;-Load-to-Graph">Timeseries Data Extract &amp; Load to Graph<a class="anchor-link" href="#Timeseries-Data-Extract-&amp;-Load-to-Graph">&#182;</a></h1>
+<h1 id="Timeseries-Data-Extract-from-API-&amp;-Load-to-Graph">Timeseries Data Extract from API &amp; Load to Graph<a class="anchor-link" href="#Timeseries-Data-Extract-from-API-&amp;-Load-to-Graph">&#182;</a></h1>
 </div>
 </div>
 </div>
@@ -11980,7 +11980,7 @@ Saved BCHARTS-ITBITUSD.pkl to pwd
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Defining-&amp;-executing-a-function-to-retrieve-multiple-altcoin-VS-bitcon-exchange-rates-in-JSON-format-and-loading-them-into-a-multilayered-dataframe">Defining &amp; executing a function to retrieve multiple altcoin VS bitcon exchange rates in JSON format and loading them into a multilayered dataframe<a class="anchor-link" href="#Defining-&amp;-executing-a-function-to-retrieve-multiple-altcoin-VS-bitcon-exchange-rates-in-JSON-format-and-loading-them-into-a-multilayered-dataframe">&#182;</a></h3>
+<h3 id="Defining-&amp;-executing-a-function-to-retrieve-multiple-altcoin-VS-bitcoin-exchange-rates-in-JSON-format-and-loading-them-into-a-multilayered-dataframe">Defining &amp; executing a function to retrieve multiple altcoin VS bitcoin exchange rates in JSON format and loading them into a multilayered dataframe<a class="anchor-link" href="#Defining-&amp;-executing-a-function-to-retrieve-multiple-altcoin-VS-bitcoin-exchange-rates-in-JSON-format-and-loading-them-into-a-multilayered-dataframe">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -12099,7 +12099,7 @@ Saved BTC_LTC.pkl to pwd
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Write-dataframe-to-.csv">Write dataframe to .csv<a class="anchor-link" href="#Write-dataframe-to-.csv">&#182;</a></h3>
+<h3 id="Write-dataframe-to-.csv-(for-local-archiving-purposes)">Write dataframe to .csv (for local archiving purposes)<a class="anchor-link" href="#Write-dataframe-to-.csv-(for-local-archiving-purposes)">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -12120,7 +12120,7 @@ Saved BTC_LTC.pkl to pwd
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Delete-all-existing-Nodes-&amp;-Relationships-(alternate-version)">Delete all existing Nodes &amp; Relationships (alternate version)<a class="anchor-link" href="#Delete-all-existing-Nodes-&amp;-Relationships-(alternate-version)">&#182;</a></h3>
+<h3 id="Delete-all-existing-Nodes-&amp;-Relationships">Delete all existing Nodes &amp; Relationships<a class="anchor-link" href="#Delete-all-existing-Nodes-&amp;-Relationships">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -12163,19 +12163,18 @@ Saved BTC_LTC.pkl to pwd
 <span class="s2">                MERGE (y)-[:MONTH]-&gt;(m)</span>
 <span class="s2">                FOREACH (day IN (CASE</span>
 <span class="s2">                    WHEN month IN [1, 3, 5, 7, 8, 10, 12] THEN range(1, 31)</span>
-<span class="s2">                    WHEN month = 2 THEN</span>
-<span class="s2">                        CASE</span>
-<span class="s2">                            WHEN year % 4 &lt;&gt; 0 THEN range(1, 28)</span>
-<span class="s2">                            WHEN year % 100 &lt;&gt; 0 THEN range(1, 29)</span>
-<span class="s2">                            WHEN year % 400 &lt;&gt; 0 THEN range(1, 29)</span>
-<span class="s2">                            ELSE range(1, 28)</span>
-<span class="s2">                        END</span>
-<span class="s2">                    ELSE range(1, 30) </span>
-<span class="s2">                END ) | </span>
-<span class="s2">            CREATE (d:Day {year: year, month: month, day: day})</span>
-<span class="s2">            MERGE (m)-[:DAY]-&gt;(d))))</span>
+<span class="s2">                    WHEN month = 2 THEN CASE</span>
+<span class="s2">                        WHEN year % 4 &lt;&gt; 0 THEN range(1, 28)</span>
+<span class="s2">                        WHEN year % 100 &lt;&gt; 0 THEN range(1, 29)</span>
+<span class="s2">                        WHEN year % 400 &lt;&gt; 0 THEN range(1, 29)</span>
+<span class="s2">                        ELSE range(1, 28)</span>
+<span class="s2">                    END</span>
+<span class="s2">                ELSE range(1, 30) </span>
+<span class="s2">            END ) | </span>
+<span class="s2">        CREATE (d:Day {year: year, month: month, day: day})</span>
+<span class="s2">        MERGE (m)-[:DAY]-&gt;(d))))</span>
 <span class="s2">    WITH *</span>
-<span class="s2">    MATCH (year:Year)-[:MONTH]-&gt;(month)-[:DAY]-&gt;(day)</span>
+<span class="s2">    MATCH (year:Year)-[:MONTH]-&gt;(month:Month)-[:DAY]-&gt;(day:Day)</span>
 <span class="s2">    WITH year, month, day</span>
 <span class="s2">    ORDER BY year.year, month.month, day.day</span>
 <span class="s2">    WITH collect(day) as days</span>
@@ -12184,7 +12183,7 @@ Saved BTC_LTC.pkl to pwd
 <span class="s2">            FOREACH(day2 in [days[i+1]] |</span>
 <span class="s2">                CREATE UNIQUE (day1)-[:NEXT]-&gt;(day2))))</span>
 <span class="s2">    WITH *</span>
-<span class="s2">    MATCH (year:Year)-[:MONTH]-&gt;(month)</span>
+<span class="s2">    MATCH (year:Year)-[:MONTH]-&gt;(month:Month)</span>
 <span class="s2">    WITH year, month</span>
 <span class="s2">    ORDER BY year.year, month.month</span>
 <span class="s2">    WITH collect(month) as months</span>
@@ -12215,7 +12214,7 @@ Saved BTC_LTC.pkl to pwd
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Insering-Nodes-for-each-of-the-Three-Cryptocurrency-coins-in-the-dataset">Insering Nodes for each of the Three Cryptocurrency coins in the dataset<a class="anchor-link" href="#Insering-Nodes-for-each-of-the-Three-Cryptocurrency-coins-in-the-dataset">&#182;</a></h3>
+<h3 id="Inserting-Nodes-for-each-of-the-Cryptocurrency-coins-in-the-dataset">Inserting Nodes for each of the Cryptocurrency coins in the dataset<a class="anchor-link" href="#Inserting-Nodes-for-each-of-the-Cryptocurrency-coins-in-the-dataset">&#182;</a></h3>
 </div>
 </div>
 </div>
